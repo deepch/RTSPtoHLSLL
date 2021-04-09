@@ -37,7 +37,7 @@ func serveHTTP() {
 	})
 	router.GET("/play/hls/:suuid/index.m3u8", PlayHLS)
 	router.GET("/play/hls/:suuid/init.mp4", AppStreamNvrHLSMP4Init)
-	router.GET("/play/hls/:suuid/segment/:seq/file.m4s", PlayHLSTS)
+	router.GET("/play/hls/:suuid/segment/:seq/file.m4s", PlayHLSM4S)
 	router.StaticFS("/static", http.Dir("web/static"))
 	err := router.Run(Config.Server.HTTPPort)
 	if err != nil {
@@ -86,7 +86,8 @@ func PlayHLS(c *gin.Context) {
 }
 
 //PlayHLSTS send client ts segment
-func PlayHLSTS(c *gin.Context) {
+func PlayHLSM4S(c *gin.Context) {
+	c.Header("Content-Type", "video/mp4")
 	suuid := c.Param("suuid")
 	if !Config.ext(suuid) {
 		return
