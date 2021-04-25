@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/deepch/vdk/av"
 	"github.com/deepch/vdk/format/rtspv2"
 )
 
@@ -16,6 +15,7 @@ var (
 )
 
 func serveStreams() {
+
 	for k, v := range Config.Streams {
 		if v.OnDemand {
 			log.Println("OnDemand not supported")
@@ -44,11 +44,12 @@ func RTSPWorkerLoop(name, url string, OnDemand bool) {
 }
 
 func RTSPWorker(name, url string, OnDemand bool) error {
+	fps := 25
+	log.Println("Fix fps detect current 25")
+	var start bool
 	keyTest := time.NewTimer(20 * time.Second)
 	clientTest := time.NewTimer(20 * time.Second)
-	var preKeyTS = time.Duration(0)
-	var Seq []*av.Packet
-	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: url, DisableAudio: false, DialTimeout: 3 * time.Second, ReadWriteTimeout: 3 * time.Second, Debug: false})
+	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: url, DisableAudio: true, DialTimeout: 3 * time.Second, ReadWriteTimeout: 3 * time.Second, Debug: false})
 	if err != nil {
 		return err
 	}
@@ -60,6 +61,7 @@ func RTSPWorker(name, url string, OnDemand bool) error {
 	if len(RTSPClient.CodecData) == 1 && RTSPClient.CodecData[0].Type().IsAudio() {
 		AudioOnly = true
 	}
+	var line time.Duration
 	for {
 		select {
 		case <-clientTest.C:
@@ -78,13 +80,24 @@ func RTSPWorker(name, url string, OnDemand bool) error {
 		case packetAV := <-RTSPClient.OutgoingPacketQueue:
 			if AudioOnly || packetAV.IsKeyFrame {
 				keyTest.Reset(20 * time.Second)
-				if preKeyTS > 0 {
-					Config.StreamHLSAdd(name, Seq, packetAV.Time-preKeyTS)
-					Seq = []*av.Packet{}
-				}
-				preKeyTS = packetAV.Time
 			}
-			Seq = append(Seq, packetAV)
+			if packetAV.IsKeyFrame && !start {
+				start = true
+			}
+			if start {
+				packetAV.Duration = time.Duration(1000/fps) * time.Millisecond
+				line += packetAV.Duration
+				packetAV.Time = line
+				packetAV.CompositionTime = 0 * time.Millisecond
+				Config.StreamHLSAdd(name, packetAV)
+			}
 		}
 	}
+}
+func average(xs []float64) float64 {
+	total := 0.0
+	for _, v := range xs {
+		total += v
+	}
+	return total / float64(len(xs))
 }

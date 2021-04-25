@@ -11,10 +11,9 @@ $(document).ready(function() {
     var hls = new Hls({
       autoStartLoad: true,
       debug: true,
-      manifestLoadingTimeOut : 20000
+      manifestLoadingTimeOut: 200000
     });
     hls.loadSource(videoSrc);
     hls.attachMedia(video);
   }
-
 });

@@ -1,5 +1,11 @@
 # RTSPtoHLSLL
 
+not Ready! only demo work
+
+
+NOW: work only demo stream 25 fps, next version full redesign and ready soon
+
+
 Work in progress m4s ready next ll
 
 ```bash

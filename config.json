@@ -1,6 +1,6 @@
 {
   "server": {
-    "http_port": ":8083"
+    "http_port": ":8084"
   },
   "streams": {
     "H264_AAC": {
