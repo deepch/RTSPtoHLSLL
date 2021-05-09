@@ -22,22 +22,17 @@ Video Codecs Supported: H264 / H265 (H265 only IE or Safari)
 Audio Codecs Supported: AAC
 ### Download Source
 
-1. Download source (ignore error)
+1. Download source
    ```bash 
-   $ GO111MODULE=off go get github.com/deepch/RTSPtoHLSLL  
-   ```
-
-2. Enable go module
-   ```bash
-   $ export GO111MODULE=on
+   $ git clone https://github.com/deepch/RTSPtoHLSLL  
    ```
 3. CD to Directory
    ```bash
-    $ cd $GOPATH/src/github.com/deepch/RTSPtoHLSLL/
+    $ cd RTSPtoHLSLL/
    ```
 4. Test Run
    ```bash
-    $ go run *.go
+    $ GO111MODULE=on go run *.go
    ```
    
 ### Get started (configure)
@@ -87,13 +82,14 @@ Open config file and edit
 
 ## Run
 
-1. Go to source code directory
-```bash
-$ cd $GOPATH/src/github.com/deepch/RTSPtoHLSLL
-```
-2. Run source code
+1. Run source code
 ```bash
 $ go run .
+```
+
+2. Build source code
+```bash
+$ go build .
 ```
 
 ## Team
