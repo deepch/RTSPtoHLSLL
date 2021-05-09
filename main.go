@@ -10,11 +10,11 @@ import (
 func main() {
 	go serveHTTP()
 	go serveStreams()
-	sigs := make(chan os.Signal, 1)
+	sig := make(chan os.Signal, 1)
 	done := make(chan bool, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
-		sig := <-sigs
+		sig := <-sig
 		log.Println(sig)
 		done <- true
 	}()

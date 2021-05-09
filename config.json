@@ -1,11 +1,35 @@
 {
   "server": {
-    "http_port": ":8084"
+    "http_server_name": "example.com",
+    "http_port": ":80",
+    "https_port": ":443"
   },
   "streams": {
-    "H264_AAC": {
-      "on_demand": false,
-      "url": "rtsp://171.25.232.20/d7b92541b4914c8e98104cba907864f8"
+    "demo1": {
+      "url": "rtsp://171.25.232.20/d7b92541b4914c8e98104cba907864f8",
+      "fps_mode": "probe",
+      "fps_probe_time": 2,
+      "hls_segment_min_duration": 2,
+      "hls_segment_max_segments": 6
+    },
+    "demo2": {
+      "url": "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+      "fps_mode": "fixed",
+      "fps": 24,
+      "hls_segment_min_duration": 2,
+      "hls_segment_max_segments": 6
+    },
+    "demo3": {
+      "url": "rtsp://171.25.232.18/jibxjyTXkaG2DYRXGrBIZ3rGeFT0Si",
+      "fps_mode": "probe",
+      "hls_segment_min_duration": 2,
+      "hls_segment_max_segments": 6
+    },
+    "demo4": {
+      "url": "rtsp://171.25.232.12/20_3Onl3Bf3Rgx12pph6FvMTygBD0ucQ3",
+      "fps_mode": "probe",
+      "hls_segment_min_duration": 2,
+      "hls_segment_max_segments": 6
     }
   }
 }

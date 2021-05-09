@@ -1,46 +1,110 @@
 # RTSPtoHLSLL
 
-not Ready! only demo work
+### Description
 
 
-NOW: work only demo stream 25 fps, next version full redesign and ready soon
+RTSP Stream to WebBrowser over HLS Low Latency
 
+full native! not use ffmpeg or gstreamer
 
-Work in progress m4s ready next ll
+### 1. you need https!!!
+### 2. work in progress!!!
+### 3. unstable!!!
 
-```bash
-mediastreamvalidator http://127.0.0.1:8083/play/hls/H264_AAC/index.m3u8
-mediastreamvalidator: mediastreamvalidator: Version 1.7.4 (496.12-201030)
-[/play/hls/H264_AAC/index.m3u8] Started root playlist download
-[/play/hls/H264_AAC/index.m3u8] Started media playlist download
-[/play/hls/H264_AAC/index.m3u8] All media files delivered, waiting until next playlist fetch
-[/play/hls/H264_AAC/index.m3u8] All media files delivered, waiting until next playlist fetch
-[/play/hls/H264_AAC/index.m3u8] All media files delivered, waiting until next playlist fetch
-[/play/hls/H264_AAC/index.m3u8] All media files delivered, waiting until next playlist fetch
+### Limitations
 
---------------------------------------------------------------------------------
-http://127.0.0.1:8083/play/hls/H264_AAC/index.m3u8
---------------------------------------------------------------------------------
-HTTP Content-Type: application/vnd.apple.mpegurl
+1) This is a temporary project that's not finished yet.
+2) For low latency hls to work well on IOS, you need https without it, you get regular HLS!
+3) Remember this is not a production project this is an example.
 
-Processed 10 out of 10 segments
-Average segment duration: 2.000000
-Total segment bitrates (all discontinuities): average: 2747.85 kb/s, max: 2761.17 kb/s
+Video Codecs Supported: H264 / H265 (H265 only IE or Safari)
 
+Audio Codecs Supported: AAC
 
-Discontinuity: sequence: 0, parsed segment count: 10 of 10, duration: 20.000 sec, average: 2747.85 kb/s, max: 2761.17 kb/s
-Track ID: 1
-Video Codec: avc1
-Video profile: High
-Video level: 5,1
-Video resolution: 3840x2160
-Video average IDR interval: 1.999667, Standard deviation: 0.009274
-Video frame rate: 25.497
+### Get started (configure)
+Open config file and edit
 
---------------------------------------------------------------------------------
-CAUTION
---------------------------------------------------------------------------------
-MediaStreamValidator only checks for violations of the HLS specification. For a more
-comprehensive check against the HLS Authoring Specification, please run hlsreport
-on the JSON output.
+1) Go to source directory 
+   ```bash
+   $GOPATH/src/github.com/deepch/RTSPtoHLSLL/
+   ```
+2) open file config.json to edit mcedit nano or other text editor
+      ```bash
+   mcedit config.json
+   ```
+
+1) Configure you DNS name, need domain (example.com) and external IP (white) 
+   ######(if you skip this step it may work as hls without LL as it requires http 2.0)
+2) Configure you dns name
+   ```json
+   "server": {
+      "http_server_name": "example.com", <---------
+      "http_port":        ":80",
+      "https_port":       ":443"
+   }
+   ```
+3) If you know exactly the FPS of your stream, it is better to specify it in the config.
+
+#### fps_mode
+```json
+   fixed  - read config value fps 
+   sdp    - read fps send by camera sdp
+   sps    - read fps over sps vui 
+   probe  - cal fps over interval (default)
+   pts    - use pts unstable ;(  
 ```
+   ####example
+```json
+   "streams": {
+      "H264_AAC": {
+          "on_demand": false,
+          "url": "rtsp://171.25.232.20/d7b92541b4914c8e98104cba907864f8",
+          "fps_mode": "probe",
+          "fps_probe_time": 2,
+          "fps": 25
+      }
+   }
+   ```
+
+## Run
+1. Enable go module
+```bash
+$ export GO111MODULE=on
+```
+2. Get source code
+```bash
+$ go get github.com/deepch/RTSPtoHLSLL
+```
+3. Go to source code directory
+```bash
+$ cd $GOPATH/src/github.com/deepch/RTSPtoHLSLL
+```
+4. Run source code
+```bash
+$ go run .
+```
+
+## Team
+
+Deepch - https://github.com/deepch streaming developer
+
+Dmitry - https://github.com/vdalex25 web developer
+
+## Worked Browser
+
+1) Safari - Mac OS
+2) Chrome - Mac OS
+3) Safari - IOS
+
+## Other Example
+
+Examples of working with video on golang
+
+- [RTSPtoWeb](https://github.com/deepch/RTSPtoWeb)
+- [RTSPtoWebRTC](https://github.com/deepch/RTSPtoWebRTC)
+- [RTSPtoWSMP4f](https://github.com/deepch/RTSPtoWSMP4f)
+- [RTSPtoImage](https://github.com/deepch/RTSPtoImage)
+- [RTSPtoHLS](https://github.com/deepch/RTSPtoHLS)
+- [RTSPtoHLSLL](https://github.com/deepch/RTSPtoHLSLL)
+
+[![paypal.me/AndreySemochkin](https://ionicabizau.github.io/badges/paypal.svg)](https://www.paypal.me/AndreySemochkin) - You can make one-time donations via PayPal. I'll probably buy a ~~coffee~~ tea. :tea:
