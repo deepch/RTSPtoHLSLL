@@ -34,6 +34,10 @@ Audio Codecs Supported: AAC
    ```bash
     $ GO111MODULE=on go run *.go
    ```
+5. Open Browser
+    ```bash
+    open web browser https://you_domain.com or not recommendet (http://127.0.0.1:8083)
+    ```
    
 ### Get started (configure)
 Open config file and edit

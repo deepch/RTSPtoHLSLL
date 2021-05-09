@@ -1,7 +1,7 @@
 {
   "server": {
     "http_server_name": "example.com",
-    "http_port": ":80",
+    "http_port": ":8083",
     "https_port": ":443"
   },
   "streams": {
