@@ -8,7 +8,7 @@ $(document).ready(function() {
   } else if (Hls.isSupported()) {
     var hls = new Hls({
       autoStartLoad: true,
-      debug: true,
+      debug: false,
       manifestLoadingTimeOut: 200000
     });
     hls.loadSource(videoSrc);

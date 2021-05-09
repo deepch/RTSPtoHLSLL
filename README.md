@@ -20,7 +20,26 @@ full native! not use ffmpeg or gstreamer
 Video Codecs Supported: H264 / H265 (H265 only IE or Safari)
 
 Audio Codecs Supported: AAC
+### Download Source
 
+1. Download source (ignore error)
+   ```bash 
+   $ GO111MODULE=off go get github.com/deepch/RTSPtoHLSLL  
+   ```
+
+2. Enable go module
+   ```bash
+   $ export GO111MODULE=on
+   ```
+3. CD to Directory
+   ```bash
+    $ cd $GOPATH/src/github.com/deepch/RTSPtoHLSLL/
+   ```
+4. Test Run
+   ```bash
+    $ go run *.go
+   ```
+   
 ### Get started (configure)
 Open config file and edit
 
@@ -37,16 +56,16 @@ Open config file and edit
    ######(if you skip this step it may work as hls without LL as it requires http 2.0)
 2) Configure you dns name
    ```json
-   "server": {
-      "http_server_name": "example.com", <---------
+   {"server": {
+      "http_server_name": "example.com",
       "http_port":        ":80",
       "https_port":       ":443"
-   }
+   }}
    ```
 3) If you know exactly the FPS of your stream, it is better to specify it in the config.
 
 #### fps_mode
-```json
+```bash
    fixed  - read config value fps 
    sdp    - read fps send by camera sdp
    sps    - read fps over sps vui 
@@ -55,7 +74,7 @@ Open config file and edit
 ```
    ####example
 ```json
-   "streams": {
+   {"streams": {
       "H264_AAC": {
           "on_demand": false,
           "url": "rtsp://171.25.232.20/d7b92541b4914c8e98104cba907864f8",
@@ -63,23 +82,16 @@ Open config file and edit
           "fps_probe_time": 2,
           "fps": 25
       }
-   }
+   }}
    ```
 
 ## Run
-1. Enable go module
-```bash
-$ export GO111MODULE=on
-```
-2. Get source code
-```bash
-$ go get github.com/deepch/RTSPtoHLSLL
-```
-3. Go to source code directory
+
+1. Go to source code directory
 ```bash
 $ cd $GOPATH/src/github.com/deepch/RTSPtoHLSLL
 ```
-4. Run source code
+2. Run source code
 ```bash
 $ go run .
 ```
