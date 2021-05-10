@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/rand"
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 
@@ -20,18 +18,6 @@ var (
 	ErrorStreamFragmentNotFound    = errors.New("Stream Fragment Not Found")
 	ErrorStreamFragmentTimeout     = errors.New("Stream Fragment Timeout")
 )
-
-//pseudoUUID func generate random uuid
-func pseudoUUID() (uuid string) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return
-	}
-	uuid = fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-	return
-}
 
 //stringToInt convert string to int if err to zero
 func stringToInt(val string) int {

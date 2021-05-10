@@ -25,23 +25,17 @@ type MuxerHLS struct {
 	Segments          map[int]*Segment   //Current segments group
 	FragmentCtx       context.Context    //chan 1-N
 	FragmentCancel    context.CancelFunc //chan 1-N
-	//IndexCtx          context.Context    //chan 1-N
-	//IndexCancel       context.CancelFunc //chan 1-N
-
 }
 
 //NewHLSMuxer Segments
 func NewHLSMuxer(uuid string) *MuxerHLS {
 	ctx, cancel := context.WithCancel(context.Background())
-	//ctx, cancel := context.WithCancel(context.Background())
 	return &MuxerHLS{
 		UUID:           uuid,
 		MSN:            -1,
 		Segments:       make(map[int]*Segment),
 		FragmentCtx:    ctx,
 		FragmentCancel: cancel,
-		//	IndexCtx:       ctx,
-		//	IndexCancel:    cancel,
 	}
 }
 

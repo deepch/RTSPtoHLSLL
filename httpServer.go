@@ -7,14 +7,16 @@ import (
 	"time"
 
 	"github.com/deepch/vdk/format/mp4f"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 )
 
+//serveHTTP func
 func serveHTTP() {
 	router := gin.New()
-	router.Use(CORSMiddleware())
-	//router.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{".mp4", ".m4s"})))
+	router.Use(cors.Default())
+	//router.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedExtensions([]string{".mp4", ".m4s"})))
 	gin.SetMode(gin.ReleaseMode)
 	router.LoadHTMLGlob("web/templates/*")
 	router.GET("/", func(c *gin.Context) {
@@ -53,6 +55,8 @@ func serveHTTP() {
 		log.Println("Start HTTP Server Error", err)
 	}
 }
+
+//HttpHlsInit func
 func HttpHlsInit(c *gin.Context) {
 	if !Config.ext(c.Param("uuid")) {
 		log.Println("HttpHlsInit", c.Param("uuid"), ErrorStreamNotFound)
@@ -78,6 +82,7 @@ func HttpHlsInit(c *gin.Context) {
 	}
 }
 
+//HttpHlsIndex func
 func HttpHlsIndex(c *gin.Context) {
 	c.Header("Content-Type", "application/vnd.apple.mpegurl")
 	if !Config.ext(c.Param("uuid")) {
@@ -91,7 +96,11 @@ func HttpHlsIndex(c *gin.Context) {
 	}
 	_, err = c.Writer.Write([]byte(index))
 	if err != nil {
-		log.Println("HttpHlsIndex Write Error", err)
+		if err.Error() == "http2: stream closed" {
+			log.Println("HttpHlsIndex Write Browser Close Stream")
+		} else {
+			log.Println("HttpHlsIndex Write Error", err)
+		}
 		return
 	}
 }
@@ -128,7 +137,11 @@ func HttpHlsSegment(c *gin.Context) {
 	buf := Muxer.Finalize()
 	_, err = c.Writer.Write(buf)
 	if err != nil {
-		log.Println("HttpHlsSegment Writer Error", err)
+		if err.Error() == "http2: stream closed" {
+			log.Println("HttpHlsSegment Write Browser Close Stream")
+		} else {
+			log.Println("HttpHlsSegment Writer Error", err)
+		}
 		return
 	}
 }
@@ -164,22 +177,11 @@ func HttpHlsFragment(c *gin.Context) {
 	buf := Muxer.Finalize()
 	_, err = c.Writer.Write(buf)
 	if err != nil {
-		log.Println("HttpHlsFragment Write Error", err)
-		return
-	}
-}
-
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token")
-		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
-		c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent)
-			return
+		if err.Error() == "http2: stream closed" {
+			log.Println("HttpHlsFragment Write Browser Close Stream")
+		} else {
+			log.Println("HttpHlsFragment Write Error", err)
 		}
-		c.Next()
+		return
 	}
 }
