@@ -225,24 +225,11 @@ func (element *ConfigST) HLSMuxerM3U8(uuid string, msn, part int) (string, error
 	element.mutex.Lock()
 	tmp, ok := element.Streams[uuid]
 	element.mutex.Unlock()
-	if !ok {
-		return "", ErrorStreamNotFound
+	if ok {
+		index, err := tmp.HlsMuxer.GetIndexM3u8(msn, part)
+		return index, err
 	}
-	playlist, got, waitQ, session, err := tmp.HlsMuxer.GetIndexM3u8(msn, part)
-	if err != nil {
-		return "", err
-	}
-	if got {
-		return playlist, nil
-	}
-	timer := time.NewTimer(time.Second * 10)
-	select {
-	case <-timer.C:
-		tmp.HlsMuxer.CloseSessionIndex(session)
-		return "", ErrorStreamIndexTimeout
-	case playlist = <-waitQ:
-		return playlist, nil
-	}
+	return "", ErrorStreamNotFound
 }
 
 //HLSMuxerSegment get segment
@@ -260,30 +247,9 @@ func (element *ConfigST) HLSMuxerFragment(uuid string, segment, fragment int) ([
 	element.mutex.Lock()
 	tmp, ok := element.Streams[uuid]
 	element.mutex.Unlock()
-	if !ok {
-		return nil, ErrorStreamNotFound
-	}
-	buf, got, waitQ, session, err := tmp.HlsMuxer.GetFragment(segment, fragment)
-
-	if err != nil {
-		return nil, err
-	}
-	if got {
-		return buf, nil
-	}
-	timer := time.NewTimer(time.Second * 2)
-	select {
-	case <-timer.C:
-		tmp.HlsMuxer.CloseSessionPart(session)
-		return nil, ErrorStreamFragmentTimeout
-	case <-waitQ:
-		buf, got, _, _, err = tmp.HlsMuxer.GetFragment(segment, fragment)
-		if err != nil {
-			return nil, err
-		}
-		if got {
-			return buf, nil
-		}
+	if ok {
+		packet, err := tmp.HlsMuxer.GetFragment(segment, fragment)
+		return packet, err
 	}
 	return nil, ErrorStreamFragmentNotFound
 }
